@@ -494,3 +494,33 @@ If you are going to use Bootstrap components that require JavaScript (carousel, 
 
 [Link 🔗](https://codepen.io/leesjensen/pen/JjZavjW)
 
+# Setting responsive screen
+```css
+.form-width {  
+    width: 100%; /* Default width for small screens */  
+}  
+  
+@media (min-width: 576px) { /* sm breakpoint */  
+    .form-width {  
+        width: 80%; /* Width for small screens and up */  
+    }  
+}  
+  
+@media (min-width: 768px) { /* md breakpoint */  
+    .form-width {  
+        width: 50%; /* Width for medium screens and up */  
+    }  
+}  
+  
+@media (min-width: 992px) { /* lg breakpoint */  
+    .form-width {  
+        width: 35%; /* Width for large screens and up */  
+    }  
+}  
+  
+@media (min-width: 1200px) { /* xlg breakpoint */  
+    .form-width {  
+        width: 20%; /* Width for large screens and up */  
+    }  
+}
+```
