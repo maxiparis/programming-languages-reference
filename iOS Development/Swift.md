@@ -1,3 +1,957 @@
+# Basics
+## Tuples
+
+**Declaration**:
+```swift
+let http404Error = (404, "Not found") //no name
+let http200Error = (code: 200, message: "Success") //with name
+```
+
+**Accessing:**
+```swift
+let (statusCode, statusMessage) = http404Error
+//statusCode = 404
+
+let (justTheStatusCode, _) = http404Error
+//statusCode = 404, we dont care about the statusMessage
+
+let statusCode = http404Error.0 
+//accessing by the index in the tuple
+
+let successStatusCode = http200Error.code
+```
+
+
+## Handling optionals
+
+### Optional Binding
+```swift
+if let food = optionalFood {
+	...
+}
+```
+
+### Fall back (nil-coalescing operator (`??`)
+```swift
+let name: String?
+
+print("\(name ?? "No name")")
+```
+
+### Force Unwrapping
+```swift
+let name: String?
+print("\(name!)")
+
+//this is the same as: 
+let number = convertedNumber! 
+guard let number = convertedNumber else {
+	 fatalError("The number was invalid") 
+ }
+```
+
+
+## Error Handling
+
+```swift
+func canThrowAnError() throws { 
+	// this function may or may not throw an error 
+}
+
+do {
+    try canThrowAnError()
+    // no error was thrown
+} catch {
+    // an error was thrown
+}
+```
+
+# Operators
+
+## Remainder % 
+``` swift
+9 % 4    // equals 1
+```
+
+## Unary (minus and plus)
+
+```swift
+let three = 3
+let minusThree = -three       // minusThree equals -3
+let plusThree = -minusThree   // plusThree equals 3, or "minus minus three"
+
+let minusSix = -6
+let alsoMinusSix = +minusSix  // alsoMinusSix equals -6
+```
+
+## Compound Assignment Operator
+```swift
+var a = 1
+a += 2
+// a is equal to 3 now
+```
+
+## Range operators
+### Closed range operator (`...`)
+```swift
+for i in 1...5 {
+	//goes from 1, 2, 3, 4, 5
+}
+```
+
+### Half open range operator (`..<`)
+```swift
+for i in 1..<5 {
+	//goes from 1,2,3,4, it does not go to 5
+}
+```
+
+### One-sided Ranges `[x...]`
+```swift
+let names = ["Anna", "Alex", "Brian", "Jack"]
+
+for name in names[2...] {
+    print(name)
+}
+// Brian
+// Jack
+
+
+for name in names[...2] {
+    print(name)
+}
+// Anna
+// Alex
+// Brian
+
+
+
+let range = ...5
+range.contains(7)   // false
+range.contains(4)   // true
+range.contains(-1)  // true
+```
+
+
+# Collections
+
+![[Pasted image 20241101130229.png]]
+## Array
+- All elements in an array must be of the **same type**.
+- The values in an array are **ordered**, each having a specific position or index.
+- An array can contain duplicate values, where the same element appears more than once in different positions.
+
+```swift
+
+//creating empty array
+var someInts: [Int] = [] 
+
+---
+//creating array with default values
+// threeDoubles is of type [Double], and equals [0.0, 0.0, 0.0]
+var threeDoubles = Array(repeating: 0.0, count: 3)
+--
+//Adding elements
+shoppingList.append("Flour")
+shoppingList += ["Baking Powder"]
+// shoppingList now contains 4 items
+shoppingList += ["Chocolate Spread", "Cheese", "Butter"]
+// shoppingList now contains 7 items
+
+
+shoppingList[0] = "Six eggs"
+// the first item in the list is now equal to "Six eggs" rather than "Eggs"
+
+
+//Iterating over an array
+
+for item in shoppingList {
+    print(item)
+}
+```
+
+
+## Sets
+
+A _set_ stores distinct values of the same type in a collection with no defined ordering. You can use a set instead of an array when the order of items isn’t important, or when you need to ensure that an item only appears once.
+
+- same type
+- no ordering
+- use when order is not important
+
+```swift
+//Creating a set
+var letters = Set<Character>()
+print("letters is of type Set<Character> with \(letters.count) items.")
+// Prints "letters is of type Set<Character> with 0 items."
+
+letters.insert("a")
+// letters now contains 1 value of type Character
+
+
+//Creating a set with an array literal
+var favoriteGenres: Set<String> = ["Rock", "Classical", "Hip hop"] 
+// favoriteGenres has been initialized with three initial items
+
+
+//Infering the type when creating:
+var favoriteGenres: Set = ["Rock", "Classical", "Hip hop"]
+
+---
+//Removing
+if let removedGenre = favoriteGenres.remove("Rock") {
+    print("\(removedGenre)? I'm over it.")
+} else {
+    print("I never much cared for that.")
+}
+
+---
+//Checking if a value is contained
+if favoriteGenres.contains("Funk") {
+    print("I get up on the good foot.")
+} else {
+    print("It's too funky in here.")
+}
+// Prints "It's too funky in here."
+```
+
+### Set operations
+![[Pasted image 20241101131112.png]]
+
+
+
+# Control flow
+## Repeat-while
+The `repeat`-`while` loop in Swift is analogous to a `do`-`while` loop in other languages.
+
+```swift
+repeat {
+   <#statements#>
+} while <#condition#>
+```
+
+
+## `Breakthrough`
+
+```swift
+let integerToDescribe = 5
+var description = "The number \(integerToDescribe) is"
+switch integerToDescribe {
+case 2, 3, 5, 7, 11, 13, 17, 19:
+    description += " a prime number, and also"
+    fallthrough
+default:
+    description += " an integer."
+}
+print(description)
+// Prints "The number 5 is a prime number, and also an integer."
+```
+
+
+### Labeled statements
+
+```swift
+<#label name#>: while <#condition#> {
+   <#statements#>
+}
+
+//example: 
+
+gameLoop: while square != finalSquare {
+    diceRoll += 1
+    if diceRoll == 7 { diceRoll = 1 }
+    switch square + diceRoll {
+    case finalSquare:
+        // diceRoll will move us to the final square, so the game is over
+        break gameLoop
+    case let newSquare where newSquare > finalSquare:
+        // diceRoll will move us beyond the final square, so roll again
+        continue gameLoop
+    default:
+        // this is a valid move, so find out its effect
+        square += diceRoll
+        square += board[square]
+    }
+}
+print("Game over!")
+```
+
+
+# Functions
+
+Functions: all except “In-Out Parameters”  
+
+```swift
+
+//Functions with multiple return values: use tuple
+func minMax(array: [Int]) -> (min: Int, max: Int) {
+    var currentMin = array[0]
+    var currentMax = array[0]
+    for value in array[1..<array.count] {
+        if value < currentMin {
+            currentMin = value
+        } else if value > currentMax {
+            currentMax = value
+        }
+    }
+    return (currentMin, currentMax)
+}
+
+let bounds = minMax(array: [8, -6, 2, 109, 3, 71])
+print("min is \(bounds.min) and max is \(bounds.max)")
+// Prints "min is -6 and max is 109"
+```
+
+## Variadic parameters
+- **Definition**: A variadic parameter accepts zero or more values of a specified type.
+- **Purpose**: To specify that the parameter can be passed a varying number of input values when the function is called.
+- **Syntax**: Write variadic parameters by inserting three period characters (…) after the parameter’s type name. `func arithmeticMean(_ numbers: Double...)`
+
+```swift
+func arithmeticMean(_ numbers: Double...) -> Double {
+    var total: Double = 0
+    for number in numbers {
+        total += number
+    }
+    return total / Double(numbers.count)
+}
+arithmeticMean(1, 2, 3, 4, 5)
+// returns 3.0, which is the arithmetic mean of these five numbers
+arithmeticMean(3, 8.25, 18.75)
+// returns 10.0, which is the arithmetic mean of these three numbers
+```
+
+
+# Closures
+Closures: all except “Escaping Closures” and “Autoclosures”   
+
+## Closue Expresion Synxtax
+
+``` swift
+{ (<#parameters#>) -> <#return type#> in
+   <#statements#>
+}
+```
+
+## Examples:
+```swift
+func backward(_ s1: String, _ s2: String) -> Bool {
+    return s1 > s2
+}
+var reversedNames = names.sorted(by: backward)
+// reversedNames is equal to ["Ewa", "Daniella", "Chris", "Barry", "Alex"]
+
+
+reversedNames = names.sorted(by: { (s1: String, s2: String) -> Bool in return s1 > s2 })
+
+reversedNames = names.sorted(by: { s1, s2 in return s1 > s2 } )
+
+reversedNames = names.sorted(by: { s1, s2 in s1 > s2 } )
+
+reversedNames = names.sorted(by: { $0 > $1 } )
+
+reversedNames = names.sorted(by: >)
+
+```
+
+## Trailing closures
+- Trailing Closure Usage: Useful for passing long closure expressions as the final argument to a function.
+- Trailing Closure Syntax: Written after the function call’s parentheses, even though it’s still an argument.
+- Trailing Closure Argument Label: Not included in the function call when using trailing closure syntax.
+
+```swift
+func someFunctionThatTakesAClosure(closure: () -> Void) {
+    // function body goes here
+}
+
+
+// Here's how you call this function without using a trailing closure:
+someFunctionThatTakesAClosure(closure: {
+    // closure's body goes here
+})
+
+
+// Here's how you call this function with a trailing closure instead:
+someFunctionThatTakesAClosure() {
+    // trailing closure's body goes here
+}
+```
+
+
+# Enumerations
+### Syntax
+```swift
+enum CompassPoint {
+    case north
+    case south
+    case east
+    case west
+}
+
+var directionToHead = CompassPoint.west
+
+
+directionToHead = .south
+switch directionToHead {
+case .north:
+    print("Lots of planets have a north")
+case .south:
+    print("Watch out for penguins")
+case .east:
+    print("Where the sun rises")
+case .west:
+    print("Where the skies are blue")
+}
+
+
+//Default 
+
+let somePlanet = Planet.earth
+switch somePlanet {
+case .earth:
+    print("Mostly harmless")
+default:
+    print("Not a safe place for humans")
+}
+```
+
+### Associated values
+
+```swift
+enum Barcode {
+    case upc(Int, Int, Int, Int)
+    case qrCode(String)
+}
+
+var productBarcode = Barcode.upc(8, 85909, 51226, 3)
+productBarcode = .qrCode("ABCDEFGHIJKLMNOP")
+
+
+switch productBarcode {
+case .upc(let numberSystem, let manufacturer, let product, let check):
+    print("UPC: \(numberSystem), \(manufacturer), \(product), \(check).")
+case .qrCode(let productCode):
+    print("QR code: \(productCode).")
+}
+```
+
+
+### Raw values
+Enumeration cases can have default values (raw values) instead of associated values.
+
+```swift
+enum ASCIIControlCharacter: Character {
+    case tab = "\t"
+    case lineFeed = "\n"
+    case carriageReturn = "\r"
+}
+```
+
+
+#### Implicitely assigned raw values
+```swift
+enum Planet: Int {
+    case mercury = 1, venus, earth, mars, jupiter, saturn, uranus, neptune
+}
+//In the example above, Planet.mercury has an explicit raw value of 1, Planet.venus has an implicit raw value of 2, and so on.
+
+
+```
+
+#### Accessing raw values
+```swift
+let earthsOrder = Planet.earth.rawValue
+// earthsOrder is 3
+
+
+let sunsetDirection = CompassPoint.west.rawValue
+// sunsetDirection is "west"
+```
+
+
+# Structures and Classes
+
+Idetity operators
+
+It can sometimes be useful to find out whether two constants or variables refer to exactly the same instance of a class. To enable this, Swift provides two identity operators:
+
+```swift
+// Identical to (===)
+
+// Not identical to (!==)
+
+
+if tenEighty === alsoTenEighty {
+    print("tenEighty and alsoTenEighty refer to the same VideoMode instance.")
+}
+// Prints "tenEighty and alsoTenEighty refer to the same VideoMode instance."
+```
+
+
+# Properties
+## Global and Local Variabesl
+
+- **Global Variable Definition**: Defined outside of any function, method, closure, or type context.
+- **Local Variable Definition**: Defined within a function, method, or closure context.
+
+## Static
+
+```swift
+struct SomeStructure {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 1
+    }
+}
+enum SomeEnumeration {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 6
+    }
+}
+class SomeClass {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 27
+    }
+    class var overrideableComputedTypeProperty: Int {
+        return 107
+    }
+}
+
+
+
+
+print(SomeStructure.storedTypeProperty)
+// Prints "Some value."
+SomeStructure.storedTypeProperty = "Another value."
+print(SomeStructure.storedTypeProperty)
+// Prints "Another value."
+print(SomeEnumeration.computedTypeProperty)
+// Prints "6"
+print(SomeClass.computedTypeProperty)
+// Prints "27"
+```
+
+# Methods
+
+## Instance Methods
+Instance methods are functions that belong to instances of a particular class, structure, or enumeration. 
+
+## Type Methods
+Instance methods are called on instances of a type, while type methods, indicated by static or class, are called on the type itself.
+```swift
+class SomeClass {
+    class func someTypeMethod() {
+        // type method implementation goes here
+    }
+}
+SomeClass.someTypeMethod()
+```
+
+
+## Initialization
+
+```swift
+//more than one init
+struct Celsius {
+    var temperatureInCelsius: Double
+    init(fromFahrenheit fahrenheit: Double) {
+        temperatureInCelsius = (fahrenheit - 32.0) / 1.8
+    }
+    init(fromKelvin kelvin: Double) {
+        temperatureInCelsius = kelvin - 273.15
+    }
+}
+
+
+let boilingPointOfWater = Celsius(fromFahrenheit: 212.0)
+// boilingPointOfWater.temperatureInCelsius is 100.0
+let freezingPointOfWater = Celsius(fromKelvin: 273.15)
+// freezingPointOfWater.temperatureInCelsius is 0.0
+```
+
+
+# Optional chaining
+
+```swift
+if let johnsStreet = john.residence?.address?.street {
+    print("John's street name is \(johnsStreet).")
+} else {
+    print("Unable to retrieve the address.")
+}
+// Prints "Unable to retrieve the address."
+
+
+
+let johnsAddress = Address()
+johnsAddress.buildingName = "The Larches"
+johnsAddress.street = "Laurel Street"
+john.residence?.address = johnsAddress
+
+
+if let johnsStreet = john.residence?.address?.street {
+    print("John's street name is \(johnsStreet).")
+} else {
+    print("Unable to retrieve the address.")
+}
+// Prints "John's street name is Laurel Street."
+```
+
+# Error Handling
+
+## Using Enums
+```swift
+enum VendingMachineError: Error {
+    case invalidSelection
+    case insufficientFunds(coinsNeeded: Int)
+    case outOfStock
+}
+
+throw VendingMachineError.insufficientFunds(coinsNeeded: 5)
+
+```
+
+## Ways of handling errors in swift: 
+
+- **Error Handling Methods**: Propagate error, use do-catch statement, handle as optional value, or assert no error.
+- **Propagate Error**: Pass error from function to calling code.
+- **Do-Catch Statement**: Handle error within a specific block of code.
+```swift
+var vendingMachine = VendingMachine()
+vendingMachine.coinsDeposited = 8
+do {
+    try buyFavoriteSnack(person: "Alice", vendingMachine: vendingMachine)
+    print("Success! Yum.")
+} catch VendingMachineError.invalidSelection {
+    print("Invalid Selection.")
+} catch VendingMachineError.outOfStock {
+    print("Out of Stock.")
+} catch VendingMachineError.insufficientFunds(let coinsNeeded) {
+    print("Insufficient funds. Please insert an additional \(coinsNeeded) coins.")
+} catch {
+    print("Unexpected error: \(error).")
+}
+// Prints "Insufficient funds. Please insert an additional 2 coins."
+```
+- **Optional Value Handling**: Treat error as an optional value.
+If an error is thrown while evaluating the try? expression, the value of the expression is nil
+```swift
+func someThrowingFunction() throws -> Int {
+    // ...
+}
+
+
+let x = try? someThrowingFunction()
+
+
+let y: Int?
+do {
+    y = try someThrowingFunction()
+} catch {
+    y = nil
+}
+
+---
+
+func fetchData() -> Data? {
+    if let data = try? fetchDataFromDisk() { return data }
+    if let data = try? fetchDataFromServer() { return data }
+    return nil
+}
+```
+- **Assert No Error**: Assume error will not occur.
+
+
+## How to throw
+```swift
+func canThrowErrors() throws -> String
+
+func cannotThrowErrors() -> String
+```
+
+# Async
+
+•	Asynchronous Function Definition: A function that can be suspended while executing, waiting for something.
+•	Asynchronous Function Indication: Marked with the `async` keyword in its declaration.
+
+```swift
+func listPhotos(inGallery name: String) async -> [String] {
+    let result = // ... some asynchronous networking code ...
+    return result
+}
+
+
+let photoNames = await listPhotos(inGallery: "Summer Vacation")
+let sortedNames = photoNames.sorted()
+let name = sortedNames[0]
+let photo = await downloadPhoto(named: name)
+show(photo)
+
+
+```
+
+# Type Casting
+
+- **Type Casting Definition:** A way to check the type of an instance or treat an instance as a different superclass or subclass.
+- **Type Casting Implementation**: Implemented with the `is` and `as` operators in Swift.
+- **Operator Function**: The is operator checks the type of a value, while the as operator casts a value to a different type.
+## Checking type
+```swift
+var movieCount = 0
+var songCount = 0
+
+
+for item in library {
+    if item is Movie {
+        movieCount += 1
+    } else if item is Song {
+        songCount += 1
+    }
+}
+
+print("Media library contains \(movieCount) movies and \(songCount) songs")
+// Prints "Media library contains 2 movies and 3 songs"
+```
+
+
+## Downcasting
+```swift
+for item in library {
+    if let movie = item as? Movie {
+        print("Movie: \(movie.name), dir. \(movie.director)")
+    } else if let song = item as? Song {
+        print("Song: \(song.name), by \(song.artist)")
+    }
+}
+
+
+// Movie: Casablanca, dir. Michael Curtiz
+// Song: Blue Suede Shoes, by Elvis Presley
+// Movie: Citizen Kane, dir. Orson Welles
+// Song: The One And Only, by Chesney Hawkes
+// Song: Never Gonna Give You Up, by Rick Astley
+```
+
+## Type Casting for Any and AnyObject
+
+```swift
+var things: [Any] = []
+
+
+things.append(0)
+things.append(0.0)
+things.append(42)
+things.append(3.14159)
+things.append("hello")
+things.append((3.0, 5.0))
+things.append(Movie(name: "Ghostbusters", director: "Ivan Reitman"))
+things.append({ (name: String) -> String in "Hello, \(name)" })
+
+
+for thing in things {
+    switch thing {
+    case 0 as Int:
+        print("zero as an Int")
+    case 0 as Double:
+        print("zero as a Double")
+    case let someInt as Int:
+        print("an integer value of \(someInt)")
+    case let someDouble as Double where someDouble > 0:
+        print("a positive double value of \(someDouble)")
+    case is Double:
+        print("some other double value that I don't want to print")
+    case let someString as String:
+        print("a string value of \"\(someString)\"")
+    case let (x, y) as (Double, Double):
+        print("an (x, y) point at \(x), \(y)")
+    case let movie as Movie:
+        print("a movie called \(movie.name), dir. \(movie.director)")
+    case let stringConverter as (String) -> String:
+        print(stringConverter("Michael"))
+    default:
+        print("something else")
+    }
+}
+
+
+// zero as an Int
+// zero as a Double
+// an integer value of 42
+// a positive double value of 3.14159
+// a string value of "hello"
+// an (x, y) point at 3.0, 5.0
+// a movie called Ghostbusters, dir. Ivan Reitman
+// Hello, Michael
+```
+
+
+# Extensions
+
+•	Extension Functionality: Adds **new functionality** to existing types.
+•	Target Types: 
+	- `Classes`
+	- `structures`
+	- `enumerations`
+	- `protocols`
+•	Retroactive Modeling: Extends types without access to the original source code.
+
+### Extension Syntax
+Declare extensions with the extension keyword:
+
+```swift
+extension SomeType {
+    // new functionality to add to SomeType goes here
+}
+```
+
+#### Adding protocols to a type
+```swift
+extension SomeType: SomeProtocol, AnotherProtocol {
+    // implementation of protocol requirements goes here
+}
+```
+
+### Computed properties
+```swift
+extension Double {
+    var km: Double { return self * 1_000.0 }
+    var m: Double { return self }
+    var cm: Double { return self / 100.0 }
+    var mm: Double { return self / 1_000.0 }
+    var ft: Double { return self / 3.28084 }
+}
+let oneInch = 25.4.mm
+print("One inch is \(oneInch) meters")
+// Prints "One inch is 0.0254 meters"
+let threeFeet = 3.ft
+print("Three feet is \(threeFeet) meters")
+// Prints "Three feet is 0.914399970739201 meters"
+```
+
+
+### Methods
+```swift
+extension Int {
+    func repetitions(task: () -> Void) {
+        for _ in 0..<self {
+            task()
+        }
+    }
+}
+
+3.repetitions {
+    print("Hello!")
+}
+// Hello!
+// Hello!
+// Hello!
+```
+
+# Protocol
+
+- Protocol Definition: A blueprint for methods, properties, and other requirements.
+- Protocol Adoption: **Classes, structures, or enumerations** can adopt a protocol to provide an implementation.
+- Protocol Conformance: A type conforms to a protocol if it satisfies the protocol’s requirements.
+
+```swift
+protocol SomeProtocol {
+    // protocol definition goes here
+}
+
+struct SomeStructure: FirstProtocol, AnotherProtocol {
+    // structure definition goes here
+}
+```
+
+
+# Generics
+
+```swift
+func swapTwoValues<T>(_ a: inout T, _ b: inout T) {
+    let temporaryA = a
+    a = b
+    b = temporaryA
+}
+```
+
+# Access Control
+In Swift, access control modifiers determine the visibility of code elements (like properties, methods, classes, etc.) from other parts of a program. Here’s how they work:
+
+### 1. `public`
+- **Visibility:** Accessible from any file or module (even outside the current module).
+- **Usage:** Used for elements intended to be used across different modules (e.g., frameworks or libraries).
+- **Example:**
+  ```swift
+  public class MyClass {
+      public var publicProperty = 0
+      public func publicMethod() {}
+  }
+  ```
+
+### 2. `internal` (default)
+- **Visibility:** Accessible only within the current module (e.g., an app or framework).
+- **Usage:** Often used for most internal code, as it provides access only within the module, preventing outside access.
+- **Example:**
+  ```swift
+  class MyInternalClass {
+      var internalProperty = 0 // implicitly internal
+      func internalMethod() {}  // implicitly internal
+  }
+  ```
+
+### 3. `fileprivate`
+- **Visibility:** Accessible only within the same Swift file.
+- **Usage:** Useful for grouping related code within a file, limiting access to that file only.
+- **Example:**
+  ```swift
+  fileprivate class FilePrivateClass {
+      fileprivate var filePrivateProperty = 0
+      fileprivate func filePrivateMethod() {}
+  }
+  ```
+
+### 4. `private`
+- **Visibility:** Accessible only within the enclosing scope (like a class, struct, or extension).
+- **Usage:** Best for hiding implementation details completely from outside the scope, even within the same file.
+- **Example:**
+  ```swift
+  class PrivateClass {
+      private var privateProperty = 0
+      private func privateMethod() {}
+  }
+  ```
+
+---
+
+### `private(set)` and `fileprivate(set)` Variants
+Sometimes, you want a property to be readable everywhere allowed by its access level but only writable in a limited scope. The `private(set)` and `fileprivate(set)` modifiers let you control that:
+
+- **`private(set)`**: Makes the property read-only outside the enclosing scope, but writable within it.
+- **`fileprivate(set)`**: Similar, but writable within the file.
+
+**Example with `private(set)`**:
+```swift
+public class Example {
+    public private(set) var readOnlyProperty = 0 // Writable within Example, read-only elsewhere
+    func increment() {
+        readOnlyProperty += 1
+    }
+}
+```
+
+**Example with `fileprivate(set)`**:
+```swift
+fileprivate class Example {
+    fileprivate fileprivate(set) var readOnlyProperty = 0 // Writable within this file
+    func increment() {
+        readOnlyProperty += 1
+    }
+}
+```
+
+This setup is useful for properties that need controlled modification within specific areas but should be immutable elsewhere.
+
 # Classes vs Structs
 
 | Feature               | **Class**                          | **Struct**                         |
@@ -1200,3 +2154,38 @@ Here, the size change is only animated when wrapped inside the `withAnimation` c
 - **Explicit animations** give you control over exactly when animations should start, making them better suited for complex animations or when you need to synchronize multiple changes.
 
 By understanding these two types, you can decide which approach fits your animation needs!
+
+
+
+# Controlling tappable area using `.contentShape` view modifier
+
+- I used `.contentShape` to fix the issue with dragging the cells for the Tools reordering in the BYU app.
+
+## When to use?
+If you add a tap gesture to a primitive SwiftUI view such as `Text` or `Image`, the whole view becomes tappable. If you add a tap gesture to a container SwiftUI view, such as `VStack` or `HStack`, then SwiftUI only adds the gesture to the parts of the container that have something inside – **large parts of the stack are likely to be untappable.**
+
+If this is what you want then the default behavior is fine. However, if you want to change the shape of **hit tests – the area that responds to taps –** then you should use the `contentShape()` modifier with the shape you want.
+
+For example, this code creates a `VStack` containing an image, a spacer, and some text, then uses the `contentShape()` modifier to make the whole stack tappable rather than just the image and text:
+
+```swift
+VStack {
+    Image(systemName: "person.circle").resizable().frame(width: 50, height: 50)
+    Spacer().frame(height: 50)
+    Text("Paul Hudson")
+}
+.contentShape(Rectangle())
+.onTapGesture {
+    print("Show details for user")
+}
+```
+
+from: https://www.hackingwithswift.com/quick-start/swiftui/how-to-control-the-tappable-area-of-a-view-using-contentshape
+
+https://www.hackingwithswift.com/img/books/quick-start/swiftui/how-to-control-the-tappable-area-of-a-view-using-contentshape-1~dark.mp4
+
+# Live Activities
+
+https://medium.com/@marwa.diab/animated-timer-in-swiftui-part-2-e1245d7ebe7f
+
+

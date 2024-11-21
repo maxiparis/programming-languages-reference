@@ -52,7 +52,7 @@ function Demo() {
 
 `<div>Component: <b>Hello world</b></div>`
 
-## Properties
+## Properties or `Props`
 
 React components also allow you to pass information to them in the form of element properties. The component receives the properties in its constructor and then can display them when it renders.
 
@@ -212,4 +212,261 @@ root.render(
     </div>
   </BrowserRouter>
 );
+```
+
+
+
+# Working on TicTacToe
+
+## How app works
+
+
+### Index.html
+```html
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>Document</title>  
+</head>  
+<body>  
+  <div id="root"></div>  
+</body>  
+</html>
+```
+
+### Index.js
+```jsx
+import React, { StrictMode } from "react";  
+import { createRoot } from "react-dom/client";  
+import "./styles.css";  
+  
+import App from "./App";  
+  
+const root = createRoot(document.getElementById("root"));  
+root.render(  
+  <StrictMode>    
+	  <App />  
+  </StrictMode>  
+);
+```
+
+### App.js
+```jsx
+import { useState } from "react";  
+  
+
+function Board() {  
+    const [squares, setSquares] = useState(Array(9).fill(null));  
+    const [xIsNext, setXIsNext] = useState(true);  
+  
+    function handleClick(i) {  
+        if (squares[i] || calculateWinner(squares)) {  
+            return;  
+        }  
+  
+        const nextSquares = squares.slice();  
+        if (xIsNext) {  
+            nextSquares[i] = "X";  
+        } else {  
+            nextSquares[i] = "O";  
+        }  
+  
+        setSquares(nextSquares);  
+        setXIsNext(!xIsNext);  
+    }  
+  
+    const winner = calculateWinner(squares);  
+    let status;  
+    if (winner) {  
+        status = 'Winner: ' + winner;  
+    } else {  
+        status = 'Next player: ' + (xIsNext ? 'X' : 'O');  
+    }  
+  
+    return (  
+        <>  
+            <div className="status">{status}</div>  
+            <div className="board-row">  
+                <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>  
+                <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>  
+                <Square value={squares[2]} onSquareClick={() => handleClick(2)}/>  
+            </div>  
+            <div className="board-row">  
+                <Square value={squares[3]} onSquareClick={() => handleClick(3)}/>  
+                <Square value={squares[4]} onSquareClick={() => handleClick(4)}/>  
+                <Square value={squares[5]} onSquareClick={() => handleClick(5)}/>  
+            </div>  
+            <div className="board-row">  
+                <Square value={squares[6]} onSquareClick={() => handleClick(6)}/>  
+                <Square value={squares[7]} onSquareClick={() => handleClick(7)}/>  
+                <Square value={squares[8]} onSquareClick={() => handleClick(8)}/>  
+            </div>  
+        </>  
+  )  
+}  
+  
+  
+export default function Game() {  
+    return (  
+        <div className="game">  
+            <div className="game-board">  
+                <Board />  
+            </div>  
+            <div className="game-info">  
+                <ol>{/*TODO*/}</ol>  
+            </div>  
+        </div>  
+    );  
+}  
+  
+function calculateWinner(squares) {  
+    const lines = [  
+        [0, 1, 2],  
+        [3, 4, 5],  
+        [6, 7, 8],  
+        [0, 3, 6],  
+        [1, 4, 7],  
+        [2, 5, 8],  
+        [0, 4, 8],  
+        [2, 4, 6]  
+    ];  
+    for (let i = 0; i < lines.length; i++) {  
+        const [a, b, c] = lines[i];  
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {  
+            return squares[a];  
+        }  
+    }  
+    return null;  
+}
+```
+
+## Export default function
+
+Allows me to declare which component from a specific file will be exported and used, when that file is called.
+
+### Example: 
+
+**App.jsx**:
+```jsx
+export default function Game() {
+	...
+}
+```
+
+
+**index.js**
+```jsx
+import App from "./App";  
+  
+const root = createRoot(document.getElementById("root"));  
+root.render(  
+  <StrictMode>    
+	  <App />  //this will render Game()
+  </StrictMode>  
+);
+```
+
+In this case, when `index.js` renders `App`,  it will actually be rendering the `Game()` component. 
+
+
+## Installed packages
+
+### Summary of Installed Packages
+
+The setup includes:
+
+- **`react`**: The core React library.
+- **`react-dom`**: Provides DOM-specific methods for rendering React components.
+- **`react-scripts`**: Handles the build process, development server, and configuration out of the box.
+
+
+# Hooks
+
+
+
+# How to inject a React app into HTML
+
+To render an app we are going to need 3 basic files:
+- **index.html**: this file will create the main html file that will be served to the user. It will contain an element `<div id="root"></div>` which is where `index.jsx` file will inject the `app.jsx`
+- **index.jsx**
+- **app.jsx**
+
+## Index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>GateKeeper 🏰| Index</title>
+
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/index.jsx"></script>
+  </body>
+</html>
+```
+
+## Index.jsx
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './src/app';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+```
+## App.jsx
+```js
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './app.css';
+
+export default function App() {
+    return <div className='body bg-dark text-light'>App will display here</div>;
+}
+```
+
+
+# Router
+
+
+# Things learned from GateKeeper's React phase 
+### Passing states to children components
+```js
+<Login
+	userName={userName}
+	authState={authState}
+	onAuthChange={(userName, authState) => {
+	  setAuthState(authState);
+	  setUserName(userName);
+	}}
+/>
+```
+
+What is going on here?
+- `onAuthChange` is a function that we are defining in the `App` component and we are passing to the `Login` component. 
+	- we are defining what the function does, and which parameters it has
+	- `Login` is free to call `onAuthChange` whenever it wants, and with whatever arguments it wants. 
+	- 
+
+### Using `localStorage`
+
+```js
+localStorage.getItem('userName') || ''
+localStorage.setItem('userName', userName);
+localStorage.removeItem('userName');
+
+//JSON
+const scoresText = localStorage.getItem('scores');  
+if (scoresText) {  
+  scores = JSON.parse(scoresText);  
+}
+localStorage.setItem('scores', JSON.stringify(scores));
 ```

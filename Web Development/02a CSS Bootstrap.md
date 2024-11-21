@@ -30,11 +30,11 @@ In Bootstrap and Flexbox, `align-items-center` and `justify-content-center` are 
 
 ### **Summary of Differences**
 
-| Property                   | `align-items-center`                      | `justify-content-center`                    |
-|---------------------------|-------------------------------------------|--------------------------------------------|
-| **Purpose**               | Vertical alignment of items               | Horizontal alignment of items              |
-| **Axis**                  | Cross axis (perpendicular to the main axis) | Main axis (the direction of the flex items) |
-| **Effect**                | Centers items vertically                  | Centers items horizontally                  |
+| Property    | `align-items-center`                        | `justify-content-center`                    |
+| ----------- | ------------------------------------------- | ------------------------------------------- |
+| **Purpose** | Vertical alignment of items                 | Horizontal alignment of items               |
+| **Axis**    | Cross axis (perpendicular to the main axis) | Main axis (the direction of the flex items) |
+| **Effect**  | Centers items vertically                    | Centers items horizontally                  |
 
 # Padding
 

@@ -611,6 +611,9 @@ try {
 
 # DOM (Document Object Model)
 
+## What is DOM?
+> In JavaScript, the Document Object Model (DOM) is a programming interface that represents the structure of an HTML or XML document as a tree of objects. Each element, attribute, and piece of text in the document is represented as a node in this tree, with properties and methods that JavaScript can interact with to manipulate the page.
+
 Here are some of the most commonly used DOM functions in JavaScript:
 
 ## **`document.getElementById(id)`**
@@ -1130,3 +1133,561 @@ console.log(person.name);  // Output: John (not affected by reassignment)
 
 In this case, the reassignment to `obj` inside the function only changes the local reference inside the function, so the original `person` remains unchanged.
 
+
+# Fetch
+In JavaScript, `fetch` is a powerful and easy-to-use function that allows you to make HTTP requests (like GET, POST, PUT, DELETE) to retrieve or send data to servers. It’s a modern alternative to the older `XMLHttpRequest` and is built on **Promises**, making it simpler and more intuitive for handling asynchronous operations.
+
+### Basic Usage of `fetch`
+
+Here’s the general syntax:
+
+```javascript
+fetch(url, options)
+    .then(response => {
+        // Handle the response
+    })
+    .catch(error => {
+        // Handle any errors
+    });
+```
+
+- **`url`**: The URL endpoint to which the request is made.
+- **`options`**: An optional object to configure the request, like setting the method, headers, or body.
+
+### Example: Basic GET Request
+
+Let’s start with a simple GET request:
+
+```javascript
+fetch('https://api.example.com/data')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data); // The JSON data returned from the server
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+```
+
+1. **`fetch`** sends a GET request to `https://api.example.com/data`.
+2. **`.then(response => response.json())`** parses the response into JSON, making it easy to work with the data.
+3. **`.catch(error => {...})`** handles any network or parsing errors.
+
+### Making POST Requests with `fetch`
+
+In a POST request, you send data to the server. Let’s say we want to send a new user to an API endpoint:
+
+```javascript
+fetch('https://api.example.com/users', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'  // Specifies that we’re sending JSON data
+    },
+    body: JSON.stringify({
+        name: 'Alice',
+        age: 30
+    })
+})
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+```
+
+- **`method: 'POST'`** tells `fetch` to use the POST method.
+- **`headers`** defines the request headers; here, we specify `Content-Type: application/json` since we're sending JSON data.
+- **`body`** is the actual data we’re sending, converted to JSON using `JSON.stringify()`.
+
+### Handling Errors with `fetch`
+
+A common mistake is assuming `fetch` automatically throws errors for HTTP response codes like 404 or 500. Instead, it only rejects the promise if there’s a **network error**. If the server responds with an error status (e.g., 404), you’ll need to handle it manually:
+
+```javascript
+fetch('https://api.example.com/data')
+    .then(response => {
+        if (!response.ok) {  // Check if status is not 2xx
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error('Fetch error:', error));
+```
+
+### Adding Headers
+
+Sometimes, you need to include additional headers in your request. For example, when using an API that requires an **Authorization token**:
+
+```javascript
+fetch('https://api.example.com/secure-data', {
+    method: 'GET',
+    headers: {
+        'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
+        'Accept': 'application/json'
+    }
+})
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Fetch error:', error));
+```
+
+### Using `async` and `await` with `fetch`
+
+`async` and `await` make `fetch` even easier to use. Here’s the same example as above using `async/await`:
+
+```javascript
+async function fetchData() {
+    try {
+        const response = await fetch('https://api.example.com/data');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+}
+
+fetchData();
+```
+
+### Common Options in `fetch`
+
+Here are some commonly used `fetch` options:
+
+- **method**: HTTP method (e.g., `GET`, `POST`, `PUT`, `DELETE`).
+- **headers**: HTTP headers (like `Content-Type` and `Authorization`).
+- **body**: The data to be sent with the request, used mostly in POST and PUT requests.
+- **credentials**: To include cookies in a cross-origin request, set to `'include'`.
+
+### Example: Sending Form Data with `fetch`
+
+If you want to send data from a form, `fetch` can work with `FormData` objects:
+
+```javascript
+const formData = new FormData();
+formData.append('username', 'john_doe');
+formData.append('age', 25);
+
+fetch('https://api.example.com/user', {
+    method: 'POST',
+    body: formData
+})
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Fetch error:', error));
+```
+
+### Example: File Upload with `fetch`
+
+You can also use `fetch` to upload files by appending them to a `FormData` object:
+
+```javascript
+const fileInput = document.querySelector('input[type="file"]');
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+
+fetch('https://api.example.com/upload', {
+    method: 'POST',
+    body: formData
+})
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Fetch error:', error));
+```
+
+### Summary
+
+- **GET Requests**: Simply provide the URL and handle the response.
+- **POST Requests**: Use the `method`, `headers`, and `body` options.
+- **Error Handling**: Check the `response.ok` property.
+- **Async/Await**: Makes handling asynchronous code more readable.
+- **Sending Form Data or Files**: Use `FormData` objects for simple handling. 
+
+With `fetch`, you can interact with APIs, send and receive data, and handle all kinds of HTTP requests in a streamlined, modern way. It’s essential for any web developer working with APIs!
+
+
+# Express
+
+Express is a fast, minimal, and flexible web framework for Node.js that simplifies building server-side applications and APIs. It provides a set of robust features for building web and mobile applications, making it one of the most popular server frameworks for Node.js.
+
+Here’s a breakdown of what makes Express so valuable and widely used:
+
+### Key Features of Express
+1. **Minimalist Core**: Express is intentionally lightweight, offering just the core features needed to handle HTTP requests and route them to various endpoints in your app. This means you can add only the features you need, making it highly flexible.
+
+2. **Middleware**: Middleware functions in Express let you handle requests in stages. For example, you can use middleware for logging, handling JSON data, authentication, or error handling, all organized in a simple, sequential way.
+
+3. **Routing**: Express has a robust and intuitive routing system for handling various endpoints and HTTP methods (GET, POST, PUT, DELETE). This allows you to build RESTful APIs or other web services effectively.
+
+4. **Template Engines**: Express supports many template engines like EJS, Pug, and Handlebars, which allow you to render HTML pages dynamically, making it easier to build web apps.
+
+5. **Static File Serving**: Express can serve static files such as images, CSS, and JavaScript files with ease, allowing it to handle both the front end and back end of simple applications.
+
+6. **Full Control**: Unlike frameworks that come with built-in databases, structure, and conventions, Express leaves choices like database selection and app structure up to you. It’s highly unopinionated, so you can choose how to organize your code and what components to use.
+
+### Basic Express App Example
+
+Here's a simple Express app setup:
+
+```javascript
+// Import Express
+const express = require('express');
+const app = express();
+
+// Define a simple route
+app.get('/', (req, res) => {
+    res.send('Hello, world!');
+});
+
+// Define a dynamic route
+app.get('/user/:name', (req, res) => {
+    res.send(`Hello, ${req.params.name}`);
+});
+
+// Start the server on port 3000
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+```
+
+- **`app.get()`** defines a route for handling GET requests to `'/'` or `'/user/:name'`.
+- **`app.listen()`** starts the server on a specified port (3000 in this example), allowing it to listen for incoming requests.
+
+### Middleware Example
+
+Adding middleware functions is straightforward:
+
+```javascript
+// Logging middleware
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();  // Move to the next middleware or route
+});
+
+// Parsing JSON body data
+app.use(express.json());
+
+// Define routes
+app.post('/data', (req, res) => {
+    res.json({ receivedData: req.body });
+});
+```
+
+### Why Use Express?
+
+Express is versatile and can be used for:
+- **Single Page Applications**: Serve a React or Vue app while handling backend operations and APIs.
+- **RESTful APIs**: Easily build RESTful services to interact with a frontend or mobile application.
+- **Real-Time Applications**: Integrate with WebSockets for chat apps, notifications, etc.
+- **Server-Side Rendering**: For rendering dynamic HTML pages (useful for SEO) using template engines.
+
+### Summary
+
+Express simplifies Node.js development by providing essential tools for web development while remaining highly customizable. It’s great for projects of any scale, from quick prototypes to large-scale production apps, due to its flexibility, extensive middleware, and compatibility with the entire JavaScript ecosystem.
+
+
+## Things I learned from the React service phase
+
+### `Express.json()`
+
+```jsx
+const app = express();
+app.use(express.json());
+```
+
+This line tells app to parse all the requests received as json
+
+If a POST request sends JSON data to an endpoint:
+
+```json
+{"username": "max",   "password": "securepass" }
+```
+
+Without `express.json()`, `req.body` would be `undefined` because Express wouldn't know how to handle the JSON data. With `express.json()`, Express will parse the JSON data, and you can access it like this:
+
+```jsx
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  console.log(username); // 'max'
+  console.log(password); // 'securepass'
+});
+
+```
+
+## Router
+
+The code snippet:
+
+```javascript
+var apiRouter = express.Router();
+app.use('/api', apiRouter);
+```
+
+sets up a **sub-router** in an Express.js application. This structure helps organize routes and adds a **prefix** (`/api` in this case) to all routes handled by `apiRouter`. Here’s a breakdown of its purpose and how it works:
+### 3. **Example of Usage**
+   Suppose you add routes to `apiRouter` like this:
+
+   ```javascript
+   apiRouter.get('/users', (req, res) => {
+     res.send('List of users');
+   });
+
+   apiRouter.post('/users', (req, res) => {
+     res.send('Create a new user');
+   });
+   ```
+
+   With the `app.use('/api', apiRouter);` line, these routes will now be accessible at:
+
+   - `GET /api/users` for retrieving users
+   - `POST /api/users` for creating a new user
+
+## 
+
+
+##
+
+---
+
+
+# Destructuring
+
+Destructuring in JavaScript is a syntax that lets you unpack values from arrays or properties from objects into distinct variables in a concise way. This feature, introduced in ES6, makes it easier to work with data by extracting values directly without manually accessing each one. Here’s a quick summary of how it works:
+
+### 1. Array Destructuring
+With arrays, you can unpack values by position:
+```javascript
+const colors = ['red', 'green', 'blue'];
+const [first, second, third] = colors;
+console.log(first); // 'red'
+console.log(second); // 'green'
+```
+
+You can skip elements with commas or use default values:
+```javascript
+const [, , last = 'default'] = colors;
+console.log(last); // 'blue'
+```
+
+### 2. Object Destructuring
+With objects, you can unpack properties by their names:
+```javascript
+const person = { name: 'Alice', age: 25 };
+const { name, age } = person;
+console.log(name); // 'Alice'
+console.log(age); // 25
+```
+
+You can also rename variables or set defaults:
+```javascript
+const { name: firstName, age = 30 } = person;
+console.log(firstName); // 'Alice'
+```
+
+### 4. Function Parameters
+You can destructure directly in function arguments:
+```javascript
+function greet({ name, age }) {
+  console.log(`Hello ${name}, you are ${age}`);
+}
+greet({ name: 'Charlie', age: 28 }); // 'Hello Charlie, you are 28'
+```
+
+#### Function parameters:
+Yes, destructuring in function arguments is generally recommended when it simplifies your code, especially for functions that take in many parameters or require specific properties from an object. Here are some pros and cons to consider:
+
+##### Advantages of Destructuring in Function Arguments
+1. **Improves Readability**: Destructuring makes it immediately clear which properties or elements the function uses, reducing the need to look up parameter details elsewhere.
+   ```javascript
+   // Instead of this:
+   function greet(user) {
+     const name = user.name;
+     const age = user.age;
+     console.log(`Hello ${name}, you are ${age}`);
+   }
+
+   // You can do this:
+   function greet({ name, age }) {
+     console.log(`Hello ${name}, you are ${age}`);
+   }
+   ```
+
+2. **Handles Default Values Easily**: You can set default values within the destructuring syntax, making it easier to handle optional parameters without extra checks.
+   ```javascript
+   function greet({ name = 'Guest', age = 18 }) {
+     console.log(`Hello ${name}, you are ${age}`);
+   }
+   ```
+
+3. **Prevents Unused Properties**: Destructuring in function arguments allows you to pick only the properties you need from an object, avoiding clutter and unused data.
+
+4. **Supports Named Parameters**: Destructuring helps emulate named parameters, making it easier to pass arguments without relying on position.
+   ```javascript
+   // With destructuring:
+   greet({ age: 30, name: 'Alice' }); // Order doesn't matter
+   ```
+
+##### Considerations and Potential Drawbacks
+1. **Readability in Complex Cases**: For deeply nested objects, destructuring directly in function arguments can get complex and harder to read. In such cases, it might be better to destructure in the function body or pass in simpler objects.
+   ```javascript
+   function handleData({ user: { profile: { name } } }) { ... } // Can get confusing
+   ```
+
+##### When to Use It
+Destructuring in function arguments is ideal when:
+- The function only needs specific properties from an object.
+- The argument count is high and the order may vary.
+- Default values are needed for some parameters.
+
+However, if the data structure is very complex or deeply nested, it might be better to destructure within the function body for clarity.
+##### Summary
+Destructuring helps make code shorter and more readable, especially when working with complex data structures or needing to pass data into functions.
+
+
+# Falsy values
+
+The following values evaluate to `false` (also known as [Falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) values):
+
+- `false`
+- `undefined`
+- `null`
+- `0`
+- `NaN`
+- the empty string (`""`)
+
+All other values—including all objects—evaluate to `true` when passed to a conditional statement.
+
+# `For in` / `for of`
+
+## For in
+
+Loops through all the `properties` of an `Object`. 
+### Example with Object
+
+```js
+const person = { name: "Carl", age: 45 }
+
+for (i in person) {
+	console.log(i)
+}
+
+//Console:
+//name
+//age
+
+```
+
+### Example with Array
+
+```js
+const brands = ["Ford", "Honda", "Kawasaki"]
+
+for (index in brands) {
+	console.log(index)
+}
+
+//Output:
+//0
+//1
+//2
+
+```
+
+## For of 
+
+Loop that traverse through all the `iterable` properties of an object. Especially suited for Arrays, Sets, Maps, etc.
+
+### Why is better to use `for ... of` with Arrays, instead of `for ... in`
+
+```js
+const arr = [3, 5, 7];
+arr.foo = "hello";
+
+for (const i in arr) {
+  console.log(i);
+}
+// "0" "1" "2" "foo"
+
+for (const i of arr) {
+  console.log(i);
+}
+
+
+// Logs: 3 5 7
+```
+
+### Using `destructuring` with `for ... of`
+
+```js
+const obj = { foo: 1, bar: 2 };
+
+for (const [key, val] of Object.entries(obj)) {
+  console.log(key, val);
+}
+
+//Console:
+// "foo" 1
+// "bar" 2
+```
+
+
+# Working with env variables
+
+The backend and the frontend will have differences. The backend will be running with Node.js, so it will have access to all the files in the server, in this case, it will have access to the .env file. The front end will be running JS through the users browser, so it wont have access to the .env file in the root folder. 
+## In the front-end
+- The frontend runs **JavaScript in the user’s browser**, which cannot directly access server files, including `.env` files.
+- Environment variables for the frontend must be **injected at build time** by tools like **Vite**, **Webpack**, or **Create React App (CRA)**, and then bundled into the frontend code.
+- These environment variables are typically exposed as constants in the code (e.g., `process.env.REACT_APP_*` or `import.meta.env.VITE_*`), but **only values explicitly injected during the build are accessible**.
+- Since the `.env` file contains potentially sensitive data (e.g., private API keys), it should **never be sent to the frontend or bundled into the client-side code** unless the data is safe for public access.
+
+### Using Vite
+1. Make sure I have a .env file in the root of the project. The .env should contain key-value pairs where each key should START with the word `VITE`:
+```sh
+VITE_BACKEND_URL=https://maxiparis.com/api
+```
+
+```js
+const backendUrl = import.meta.env.VITE_BACKEND_URL
+```
+
+## In the backend
+
+- The backend runs in a **Node.js environment** on a server (e.g., AWS, Heroku, or your local machine during development).
+- In a backend context, the server has direct access to all files in its environment, including the `.env` file.
+- Using packages like `dotenv`, you can load the contents of the `.env` file into **`process.env`** variables at runtime, enabling the backend to securely access sensitive information like API keys, database URLs, or secrets.
+
+### Using `dotenv`
+**1. Install dotenv**
+`npm install dotenv`
+
+**2. Create .env file**
+```sh
+PORT=3000
+VITE_BACKEND_URL=https://maxiparis.com/api
+JWT_SECRET=supersecretkey
+```
+
+3. **Configure dotenv in server**
+```js
+import dotenv from 'dotenv';
+// Load environment variables from .env file
+dotenv.config();
+```
+
+## Key Differences:
+
+1. **Access to `.env` Files:**
+    - **Backend**: Direct access to `.env` at runtime.
+    - **Frontend**: No direct access; values from `.env` must be injected during build time.
+2. **Security Considerations:**
+    - Backend `.env` files can contain sensitive information (e.g., database credentials, API secrets).
+    - Frontend `.env` variables must only include non-sensitive values that can safely be exposed to users (e.g., public API URLs).
+3. **Execution Environment:**
+    - Backend: Runs on the server (Node.js).
+    - Frontend: Runs in the browser (JavaScript).
