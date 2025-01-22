@@ -1,5 +1,3 @@
-
-
 # How to add gitignore and removed cached files
 
 1. create gitigonre file `nano .gitignore`
@@ -29,4 +27,27 @@ git config --global http.postBuffer 524288000
 
 ```sh
 git restore --staged <file>
+```
+
+# Stop tracking a file
+```sh
+git rm --cached <file>
+```
+
+- **`--cached`**: Removes the file from the staging area and stops tracking it in future commits, but the file remains in your working directory.
+# Delete a branch
+
+```sh
+git branch -d [branch_name]
+```
+
+# See changes from a commit
+```sh
+git show [commit-hashasdf]
+```
+
+# Add a remote repo and push for first time
+```shell
+git remote add origin [repot url]
+git push -u origin master
 ```

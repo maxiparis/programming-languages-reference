@@ -17,3 +17,19 @@ source .env
 ```
 printenv
 ```
+
+# Docker
+
+### Start a docker image?
+`docker run [name of app]` ^459269
+
+### List of all containers
+`docker ps`
+`docker ps -a`
+
+### Docker Stop
+`docker ps`
+
+
+
+``

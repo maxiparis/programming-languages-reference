@@ -326,6 +326,32 @@ a.sort(function (v1, v2) {
 
 // arrow function syntax
 a.sort((v1, v2) => v1 - v2);
+
+// arrow function with 2 parameters, one return
+const lordify = (firstName, land) => `${firstName} of ${land}`;
+
+
+// arrow function with 2 parameters, 2+ return statements, surround with { .. }
+const lordify = (firstName, land) => {
+  if (!firstName) {
+    throw new Error("A firstName is required to lordify");
+  }
+
+  if (!land) {
+    throw new Error("A lord must have a land");
+  }
+
+  return `${firstName} of ${land}`;
+};
+
+
+// arrow function returning a object: surround object with parenthesis
+const person = (firstName, lastName) => ({
+  first: firstName,
+  last: lastName
+});
+
+
 ```
 
 Besides being compact, the `arrow` function syntax has some important semantic differences from the standard function syntax. This includes restrictions that arrow functions cannot be used for constructors or iterator generators.
@@ -1478,10 +1504,24 @@ console.log(last); // 'blue'
 ### 2. Object Destructuring
 With objects, you can unpack properties by their names:
 ```javascript
+// Example 1
 const person = { name: 'Alice', age: 25 };
 const { name, age } = person;
 console.log(name); // 'Alice'
 console.log(age); // 25
+
+
+// Example 2: passing the whole object as parameter
+const lordify = ({ firstname }) => {
+  console.log(`${firstname} of Canterbury`);
+};
+
+const regularPerson = {
+  firstname: "Bill",
+  lastname: "Wilson"
+};
+
+lordify(regularPerson); // Bill of Canterbury
 ```
 
 You can also rename variables or set defaults:
@@ -1550,6 +1590,31 @@ However, if the data structure is very complex or deeply nested, it might be bet
 Destructuring helps make code shorter and more readable, especially when working with complex data structures or needing to pass data into functions.
 
 
+
+# Object Literal Enhancement
+_Object literal enhancement_ is the opposite of destructuring. It’s the process of restructuring or putting the object back together. With object literal enhancement, we can grab variables from the global scope and add them to an object:
+
+```js
+const name = "Tallac";
+const elevation = 9738;
+
+const funHike = { name, elevation };
+
+console.log(funHike); // {name: "Tallac", elevation: 9738}
+
+
+
+// With methods
+const name = "Tallac";
+const elevation = 9738;
+const print = function() {
+  console.log(`Mt. ${this.name} is ${this.elevation} feet tall`);
+};
+
+const funHike = { name, elevation, print };
+
+funHike.print(); // Mt. Tallac is 9738 feet tall
+```
 # Falsy values
 
 The following values evaluate to `false` (also known as [Falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy) values):
@@ -1691,3 +1756,83 @@ dotenv.config();
 3. **Execution Environment:**
     - Backend: Runs on the server (Node.js).
     - Frontend: Runs in the browser (JavaScript).
+
+
+# Spread Operator `...`
+
+The spread operator is three dots (`...`) that perform several different tasks. First, the spread operator allows us to combine the contents of arrays. For example, if we had two arrays, we could make a third array that combines the two arrays into one:
+
+```js
+const peaks = ["Tallac", "Ralston", "Rose"];
+const canyons = ["Ward", "Blackwood"];
+const tahoe = [...peaks, ...canyons];
+
+
+// Create copy of array
+const peaks = ["Tallac", "Ralston", "Rose"];
+const [last] = [...peaks].reverse();
+
+console.log(last); // Rose
+console.log(peaks.join(", ")); // Tallac, Ralston, Rose
+
+
+
+// The spread operator can also be used to get the remaining items in the array:
+const lakes = ["Donner", "Marlette", "Fallen Leaf", "Cascade"];
+
+const [first, ...others] = lakes;
+
+console.log(others.join(", ")); // Marlette, Fallen Leaf, Cascade
+
+
+
+// Using the spread operator as part of the function parameters. 
+function directions(...args) {
+  let [start, ...remaining] = args;
+  let [finish, ...stops] = remaining.reverse();
+
+  console.log(`drive through ${args.length} towns`);
+  console.log(`start in ${start}`);
+  console.log(`the destination is ${finish}`);
+  console.log(`stopping ${stops.length} times in between`);
+}
+
+directions("Truckee", "Tahoe City", "Sunnyside", "Homewood", "Tahoma");
+```
+
+
+# Equality vs Stric Equality operator
+In JavaScript, `==` and `===` are comparison operators used to compare two values. However, they differ in how they perform the comparison:
+
+### `==` (Equality Operator)
+
+- **Loose Equality**: It compares two values for equality after converting both values to a common type (type coercion).
+- **Type Coercion**: Before comparing, JavaScript converts the operands to the same type.
+- **Examples**:
+    ```javascript
+    '5' == 5  // true, because '5' is converted to a number
+    false == 0  // true, because false is converted to 0
+    null == undefined  // true, these are loosely equal
+    ```
+
+### `===` (Strict Equality Operator)
+
+- **Strict Equality**: It compares two values for equality without converting them to a common type.
+- **No Type Coercion**: Both the value and the type must be the same for the comparison to return `true`.
+- **Examples**:
+    
+    ```javascript
+    '5' === 5  // false, different types (string vs number)
+    false === 0  // false, different types (boolean vs number)
+    null === undefined  // false, different types (null vs undefined)
+    ```
+    
+
+### Key Points
+
+- Use `==` when you want to allow type conversion in comparisons.
+- Use `===` when you want to ensure both the value and type are exactly the same, which is generally recommended to avoid unexpected results due to type coercion.
+
+### Best Practice
+
+It's typically a good practice to use `===` over `==` to avoid unintended type coercion, making your code more predictable and easier to understand.

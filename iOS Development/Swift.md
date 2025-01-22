@@ -2189,3 +2189,99 @@ https://www.hackingwithswift.com/img/books/quick-start/swiftui/how-to-control-th
 https://medium.com/@marwa.diab/animated-timer-in-swiftui-part-2-e1245d7ebe7f
 
 
+# Three columns Apps
+
+```swift
+var body: some View {
+        NavigationSplitView {
+            // Sidebar: Category List
+            List(categories, id: \.id, selection: $selectedCategoryID) { category in
+                Text(category.name)
+            }
+            .navigationTitle("Categories")
+        } content: {
+            // Content Column: Recipe List
+            if let category = categories.first(where: { $0.id == selectedCategoryID }) {
+                List(category.recipes, id: \.id, selection: $selectedRecipe) { recipe in
+                    NavigationLink(value: recipe) {
+                        Text(recipe.title)
+                    }
+                }
+                .navigationTitle(category.name)
+                .searchable(text: $searchText)
+            } else {
+                Text("Select a category")
+                    .foregroundStyle(.secondary)
+            }
+        } detail: {
+                if let recipe = selectedRecipe {
+                    RecipeDetailView(recipe: recipe)
+                } else {
+                    Text("Select a recipe")
+                        .foregroundStyle(.secondary)
+                }
+        }
+    }
+```
+
+
+# SwiftData
+
+## Context and Container
+
+## Relationships
+
+https://www.hackingwithswift.com/quick-start/swiftdata/how-to-create-one-to-one-relationships
+https://www.hackingwithswift.com/quick-start/swiftdata/how-to-create-one-to-many-relationships
+https://www.hackingwithswift.com/quick-start/swiftdata/how-to-create-many-to-many-relationships
+
+## Creating the models
+### @Model
+### @Relationship
+#### 
+
+## Retrieving data
+### @Query
+
+
+# ScrollViews are dangerous
+
+ Stacking two scrollviews on each other creates a multiple of issues that should be avoided in order to save time debugging. 
+ Ex: having a `List` or a `Table` inside a `ScrollView` 😥
+
+## How can I have a `List` inside a `ScrollView`?
+### Option 1: Set a height to the `List` 
+**⚠️This is Not recommended**
+```swift
+ScrollView {
+	List() {
+		...	
+	}
+	.frame(height: 300)
+}
+```
+### Option 2: Don't
+Instead, change the ScrollView for the List, and **make sections** inside the list. 
+```swift
+List {
+	Section {
+		...
+	}
+
+	Section {
+		...
+	}
+}
+```
+
+
+```
+```
+
+
+
+
+
+
+
+

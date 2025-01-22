@@ -23,6 +23,82 @@ const list = React.createElement(
 );
 ```
 
+## Declarative vs Imperative
+```js
+//Imperative: building the DOM using JS (the how its built)
+const target = document.getElementById("target");
+const wrapper = document.createElement("div");
+const headline = document.createElement("h1");
+
+wrapper.id = "welcome";
+headline.innerText = "Hello World";
+
+wrapper.appendChild(headline);
+target.appendChild(wrapper);
+
+
+//Declarative: building the same thing with React (focusing on the what we want to accomplish)
+const { render } = ReactDOM;
+
+const Welcome = () => (
+  <div id="welcome">
+    <h1>Hello World</h1>
+  </div>
+);
+
+render(<Welcome />, document.getElementById("target"));
+```
+
+## JSX
+JSX (JavaScript XML) is a syntax extension for JavaScript commonly used with React to describe what the UI should look like. It allows developers to write HTML elements and components within JavaScript code, providing a declarative way to define the structure and content of the user interface.
+
+### Key Features of JSX:
+
+1. **HTML-like Syntax**: JSX allows writing elements and components in a syntax similar to HTML, making it easier to visualize the UI structure.
+   ```jsx
+   const element = <h1>Hello, world!</h1>;
+   ```
+
+2. **Embedding Expressions**: You can embed JavaScript expressions inside JSX using curly braces `{}`.
+   ```jsx
+   const name = 'Maximiliano';
+   const element = <h1>Hello, {name}!</h1>;
+   ```
+
+3. **Components**: JSX can include user-defined components, which are typically capitalized.
+   ```jsx
+   function Welcome(props) {
+     return <h1>Hello, {props.name}</h1>;
+   }
+   ```
+
+4. **Attributes**: JSX supports passing attributes to elements, similar to HTML, but uses camelCase for event handlers and properties.
+   ```jsx
+   const element = <button onClick={handleClick}>Click me</button>;
+   ```
+
+5. **Child Elements**: JSX can have child elements nested within other elements.
+   ```jsx
+   const element = (
+     <div>
+       <h1>Hello!</h1>
+       <p>Welcome to the site.</p>
+     </div>
+   );
+   ```
+
+6. **Compilation**: JSX is not valid JavaScript; it needs to be transformed into standard JavaScript using a tool like Babel before it can be executed by the browser.
+
+### Benefits of JSX:
+- **Improved Readability**: The syntax closely resembles HTML, making it easier to understand the component structure.
+- **Seamless Integration with React**: JSX integrates well with React, making it intuitive to create and manage components.
+- **Dynamic UI**: Embedding JavaScript expressions within JSX allows for dynamic content and responsive UIs.
+
+Overall, JSX enhances the development experience in React by making the code more declarative and readable, while still maintaining the flexibility of JavaScript.
+
+# Creating a Project
+## Using Vite
+1. 
 
 # Components
 ## The render function
@@ -383,6 +459,83 @@ The setup includes:
 
 
 # Hooks
+> Functions that start with the word `use` and return a value, object, or array. 
+
+- They can only be accessed through React components. 
+
+### Basic Hooks
+1. **`useState`**
+    - Manages state in functional components.
+    - Example: `const [count, setCount] = useState(0);`
+    
+1. **`useEffect`**
+    - Handles side effects such as fetching data, subscriptions, or manually changing the DOM.
+    - Example:
+```js
+	useEffect(() => {   
+		console.log("Component mounted"); 
+	}, []);
+```
+
+- Last parameter is an optional dependency:
+	- missing = invoke one every render
+	- empty [] = invoke only on the initial render
+	- comma separated list  = invoked when any of those variables changes
+
+
+
+3. **`useContext`**
+    
+    - Accesses context values defined by `React.createContext`.
+    - Example:
+        `const value = useContext(MyContext);`
+        
+### Additional Hooks
+
+4. **`useReducer`**
+    
+    - A more advanced state management alternative to `useState`, especially for complex state logic.
+    - Example:
+        `const [state, dispatch] = useReducer(reducer, initialState);`
+        
+5. **`useCallback`**
+    
+    - Memoizes a function to avoid re-creating it on every render.
+    - Example:
+        `const memoizedCallback = useCallback(() => {   doSomething(); }, [dependencies]);`
+        
+6. **`useMemo`**
+    
+    - Memoizes a value to optimize performance.
+    - Example:
+        `const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);`
+        
+7. **`useRef`**
+    
+    - Holds a mutable reference to a DOM element or a value that persists across renders.
+    - Example:
+        `const inputRef = useRef(null);`
+        
+8. **`useLayoutEffect`**
+    
+    - Similar to `useEffect`, but fires synchronously after all DOM mutations.
+    - Example:
+        `useLayoutEffect(() => {   console.log("Synchronous side-effect"); }, []);`
+        
+9. **`useImperativeHandle`**
+    
+    - Customizes the instance value exposed when using `React.forwardRef`.
+    - Example:
+        `useImperativeHandle(ref, () => ({   focus: () => {     inputRef.current.focus();   }, }));`
+
+
+
+
+
+
+
+
+
 
 
 
@@ -435,7 +588,102 @@ export default function App() {
 
 
 # Router
+**React Router** is a standard library for routing in React applications. It enables the navigation among views of various components in a React application, allows changing the browser URL, and keeps the UI in sync with the URL.
 
+### Key Features of React Router:
+1. **Declarative Routing**: Routes are declared using a declarative syntax, making the code easy to read and understand.
+   ```jsx
+   <Route path="/home" component={Home} />
+   ```
+
+2. **Dynamic Routing**: Unlike traditional routing, which is configured in a static file, React Router allows dynamic routing that can be updated based on user interaction or API data.
+
+3. **Nested Routes**: React Router supports nesting of routes to create a hierarchical structure of components, which mirrors the URL path structure.
+   ```jsx
+   <Route path="/dashboard">
+     <Route path="settings" component={Settings} />
+   </Route>
+   ```
+
+4. **URL Parameters**: It allows passing dynamic segments in the URL, which can be accessed within the components to fetch or display specific data.
+   ```jsx
+   <Route path="/user/:id" component={User} />
+   ```
+
+5. **Programmatic Navigation**: You can navigate programmatically using the `useNavigate` hook or `history` object, which allows redirecting users based on logic.
+   ```jsx
+   const navigate = useNavigate();
+   navigate('/profile');
+   ```
+
+6. **Route Guards**: Implement logic to protect certain routes, allowing access only to authenticated users or based on certain conditions.
+
+### Basic Components of React Router:
+1. **`<BrowserRouter>`**: The main component that wraps the application and enables routing.
+   ```jsx
+   import { BrowserRouter } from 'react-router-dom';
+   <BrowserRouter>
+     <App />
+   </BrowserRouter>
+   ```
+
+2. **`<Routes>` and `<Route>`**: `<Routes>` contains multiple `<Route>` elements, each defining a path and the component to render.
+   ```jsx
+   <Routes>
+     <Route path="/" element={<Home />} />
+     <Route path="/about" element={<About />} />
+   </Routes>
+   ```
+
+3. **`<Link>`**: Used for navigation between routes without refreshing the page.
+   ```jsx
+   <Link to="/about">About</Link>
+   ```
+
+4. **`useNavigate`**: A hook that provides a function to navigate to different routes programmatically.
+   ```jsx
+   const navigate = useNavigate();
+   ```
+
+5. **`useParams`**: A hook that extracts parameters from the URL.
+   ```jsx
+   const { id } = useParams();
+   ```
+
+### Example:
+```jsx
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+
+function App() {
+  return (
+    <Router>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </Router>
+  );
+}
+
+function Home() {
+  return <h2>Home Page</h2>;
+}
+
+function About() {
+  return <h2>About Page</h2>;
+}
+```
+
+### Benefits of React Router:
+- **SPA Navigation**: Helps in building Single Page Applications with seamless navigation without full page reloads.
+- **Flexible and Modular**: Highly customizable and works well with complex routing needs.
+- **URL Management**: Keeps the browser history in sync with the UI, supporting back and forward navigation.
+
+React Router is a powerful and flexible tool for managing routing in React applications, enhancing user experience through smooth navigation and dynamic content loading.
 
 # Things learned from GateKeeper's React phase 
 ### Passing states to children components
@@ -470,3 +718,11 @@ if (scoresText) {
 }
 localStorage.setItem('scores', JSON.stringify(scores));
 ```
+
+
+# Good stuff for portfolio
+
+https://aaronshaf.github.io/react-toggle/
+https://blog.logrocket.com/dark-mode-react-in-depth-guide/
+
+
